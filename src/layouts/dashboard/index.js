@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet,useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
 //
@@ -34,11 +34,12 @@ const MainStyle = styled('div')(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
+  const location = useLocation()
 
   return (
     <RootStyle>
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-      <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      {!location.pathname.includes('sales') && <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />}
       <MainStyle>
         <Outlet />
       </MainStyle>
