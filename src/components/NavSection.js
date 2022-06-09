@@ -82,7 +82,7 @@ function NavItem({ item, active }) {
               const { title, path } = item;
               const isActiveSub = active(path);
 
-              return (
+              return (<>
                 <ListItemStyle
                   key={title}
                   component={RouterLink}
@@ -112,6 +112,13 @@ function NavItem({ item, active }) {
                   </ListItemIconStyle>
                   <ListItemText disableTypography primary={title} />
                 </ListItemStyle>
+                  <ListItemButton sx={{ pl: 4 }}>
+                    <ListItemIcon>
+                      asdfa
+                    </ListItemIcon>
+                    <ListItemText primary="Starred" />
+                  </ListItemButton>
+                  </>
               );
             })}
           </List>

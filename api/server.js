@@ -3,8 +3,9 @@ const cors = require("cors");
 const app = express();
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
+require('./app/routes/category.routes')(app);
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:3000"
 };
 app.use(cors(corsOptions));
 // parse requests of content-type - application/json
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 const dbConfig = require("./app/config/db.config");
 const db = require("./app/models");
 const Role = db.role;
+const Category = db.category;
 db.mongoose
   .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
     useNewUrlParser: true,
@@ -33,9 +35,9 @@ app.get("/", (req, res) => {
 });
 
 function initial() {
-    Role.estimatedDocumentCount((err, count) => {
+  Category.estimatedDocumentCount((err, count) => {
       if (!err && count === 0) {
-        new Role({
+        new Category({
           name: "user"
         }).save(err => {
           if (err) {
@@ -43,7 +45,7 @@ function initial() {
           }
           console.log("added 'user' to roles collection");
         });
-        new Role({
+        new Category({
           name: "moderator"
         }).save(err => {
           if (err) {
@@ -51,7 +53,7 @@ function initial() {
           }
           console.log("added 'moderator' to roles collection");
         });
-        new Role({
+        new Category({
           name: "admin"
         }).save(err => {
           if (err) {
@@ -62,7 +64,7 @@ function initial() {
       }
     });
   }
-//   initial()
+  // initial()
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

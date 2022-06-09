@@ -5,6 +5,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 // material
 import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import Axios from 'axios';
 // component
 import Iconify from '../../../components/Iconify';
 
@@ -16,19 +17,50 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    username: Yup.string().required('Username is required'),
     password: Yup.string().required('Password is required'),
   });
 
+
   const formik = useFormik({
     initialValues: {
-      email: '',
+      username: '',
       password: '',
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: async(values) => {
+      try{
+        console.log(values);
+        // const response = await axios({
+        //   method: 'post',
+        //   url: 'http://localhost:8080/',
+        //   headers: {
+        //     'Allow-Control-Allow-Origin':'*'
+        //   },
+        //   data: {
+        //     username: values.username,
+        //     password: values.password
+        //   }
+        // })
+        const optionAxios = {
+          headers: {
+              // 'Content-Type': 'application/json',
+              'Allow-Control-Allow-Origin':'*',
+              'Access-Control-Allow-Methods':'GET, POST, PATCH, PUT, DELETE, OPTIONS',              
+              'Access-Control-Allow-Credentials': true,
+              'Access-Control-Allow-Headers': "x-access-token, Origin, Content-Type, Accept",
+          }
+      }
+      const response = await Axios.post('http://localhost:8080/api/auth/signin',{
+          username: values.username,
+          password: values.password
+        },optionAxios)
+          // console.log(response);
+      }catch(error){
+        // navigate('/login', { replace: true });
+      }
+      // navigate('/dashboard', { replace: true });
     },
   });
 
@@ -45,11 +77,11 @@ export default function LoginForm() {
           <TextField
             fullWidth
             autoComplete="username"
-            type="email"
-            label="Email address"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
+            type="text"
+            label="Username"
+            {...getFieldProps('username')}
+            error={Boolean(touched.username && errors.username)}
+            helperText={touched.username && errors.username}
           />
 
           <TextField
