@@ -3,96 +3,60 @@ const db = require("../models");
 const Category = db.category;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
-exports.signup = (req, res) => {
-  const user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
-  });
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-    if (req.body.roles) {
-      Role.find(
-        {
-          name: { $in: req.body.roles }
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          user.roles = roles.map(role => role._id);
-          user.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-            res.send({ message: "User was registered successfully!" });
-          });
-        }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-        user.roles = [role._id];
-        user.save(err => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          res.send({ message: "User was registered successfully!" });
-        });
-      });
-    }
-  });
-};
-exports.signin = (req, res) => {
-  User.findOne({
-    username: req.body.username
-  })
-    .populate("roles", "-__v")
-    .exec((err, user) => {
+var _ = require('lodash');
+const { loadingButtonClasses } = require("@mui/lab");
+
+exports.index = async (req, res) => {
+  const categories = await Category.find({}).
+    limit(10);
+  res.status(200).send(categories);
+}
+exports.save = async (req, res) => {
+  if (!_.isUndefined(req.body.name)) {
+    const caategory = new Category({
+      name: req.body.name
+    });
+    caategory.save((err, category) => {
       if (err) {
         res.status(500).send({ message: err });
         return;
+      } else {
+        res.status(200).send({ message: "category is saved successfully!", data: category });
       }
-      if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+    })
+  } else {
+    res.status(500).send({ message: "Required field is needed" });
+  }
+}
+exports.update = async (req, res) => {
+  if (!_.isUndefined(req.body.id)) {
+    const id = req.body.id;
+    const prev = Category.findByIdAndUpdate(id, {
+      name: req.body.name
+    }, { new: true }, (err, category) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      } else {
+        res.status(200).send({ message: "category is updated successfully!", data: category });
       }
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });
+    }).clone()
+  } else {
+    res.status(500).send({ message: "Required field is needed" });
+  }
+}
+exports.delete = async (req, res) => {
+  if (!_.isUndefined(req.body.id)) {
+    const id = req.body.id;
+    const prev = Category.findByIdAndDelete(id, { new: true }, (err, category) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      } else {
+        res.status(200).send({ message: "category is deleted successfully!", data: category });
       }
-      var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400 // 24 hours
-      });
-      var authorities = [];
-      for (let i = 0; i < user.roles.length; i++) {
-        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-      }
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        roles: authorities,
-        accessToken: token
-      });
-    });
-};
-
-exports.index = (req,res)=>{
-  const categories = Category.find();
-  res.status(200).send(categories);
+    }).clone()
+  } else {
+    res.status(500).send({ message: "Required field is needed" });
+  }
 }

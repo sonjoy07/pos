@@ -1,5 +1,5 @@
 const { verifySignUp } = require("../middlewares");
-const controller = require("../controllers/auth.controller");
+const controller = require("../controllers/category.controller");
 const bodyParser = require('body-parser');
 const { authJwt } = require("../middlewares");
 module.exports = function (app) {
@@ -11,10 +11,24 @@ module.exports = function (app) {
         );
         next();
     });
-    app.get("/api/test/all", controller.allAccess);
     app.get(
         "/api/category/index",
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken],
         controller.index
+      );
+    app.post(
+        "/api/category/save",
+        [authJwt.verifyToken],
+        controller.save
+      );
+    app.put(
+        "/api/category/update",
+        [authJwt.verifyToken],
+        controller.update
+      );
+    app.delete(
+        "/api/category/delete",
+        [authJwt.verifyToken],
+        controller.delete
       );
 };
