@@ -1,8 +1,10 @@
 const { verifySignUp } = require("../middlewares");
 const controller = require("../controllers/auth.controller");
 const bodyParser = require('body-parser');
+const cors = require("cors");
 module.exports = function (app) {
-    app.use(bodyParser.json());
+    app.use(bodyParser.json());    
+    app.use(cors());
     app.use(function (req, res, next) {
         res.header(
             "Access-Control-Allow-Headers",

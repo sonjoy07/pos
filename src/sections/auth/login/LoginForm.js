@@ -5,7 +5,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 // material
 import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import Axios from 'axios';
+import axios from '../../../components/Axios';
 // component
 import Iconify from '../../../components/Iconify';
 
@@ -30,37 +30,20 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: async(values) => {
-      try{
-        console.log(values);
-        // const response = await axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8080/',
-        //   headers: {
-        //     'Allow-Control-Allow-Origin':'*'
-        //   },
-        //   data: {
-        //     username: values.username,
-        //     password: values.password
-        //   }
-        // })
-        const optionAxios = {
-          headers: {
-              // 'Content-Type': 'application/json',
-              'Allow-Control-Allow-Origin':'*',
-              'Access-Control-Allow-Methods':'GET, POST, PATCH, PUT, DELETE, OPTIONS',              
-              'Access-Control-Allow-Credentials': true,
-              'Access-Control-Allow-Headers': "x-access-token, Origin, Content-Type, Accept",
-          }
-      }
-      const response = await Axios.post('http://localhost:8080/api/auth/signin',{
+      try{        
+      const response = await axios.post('/auth/signin',{
           username: values.username,
           password: values.password
-        },optionAxios)
-          // console.log(response);
-      }catch(error){
-        // navigate('/login', { replace: true });
+        })
+      if(response){
+        console.log(response)
+        localStorage.setItem('userInfo',JSON.stringify(response.data))
+        localStorage.setItem('_token',JSON.stringify(response.data.accessToken))
+        navigate('/dashboard', { replace: true });
       }
-      // navigate('/dashboard', { replace: true });
+      }catch(error){
+        navigate('/login', { replace: true });
+      }
     },
   });
 

@@ -114,7 +114,8 @@ function NavItem({ item, active }) {
                 </ListItemStyle>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>
-                      asdfa
+                    <ListItemText primary="Starred" />
+                      
                     </ListItemIcon>
                     <ListItemText primary="Starred" />
                   </ListItemButton>
