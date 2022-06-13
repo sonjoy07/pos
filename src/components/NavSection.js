@@ -112,14 +112,7 @@ function NavItem({ item, active }) {
                   </ListItemIconStyle>
                   <ListItemText disableTypography primary={title} />
                 </ListItemStyle>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>
-                    <ListItemText primary="Starred" />
-                      
-                    </ListItemIcon>
-                    <ListItemText primary="Starred" />
-                  </ListItemButton>
-                  </>
+              </>
               );
             })}
           </List>
