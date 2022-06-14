@@ -20,12 +20,14 @@ import {
   TextField
 } from '@mui/material';
 import { Formik } from 'formik';
+import { useSelector, useDispatch } from "react-redux";
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
+import {getCategory,showCategory} from '../reducers/categoryReducer'
 // mock
 import axios from '../components/Axios'
 
@@ -99,6 +101,10 @@ export default function Category() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const dispatch = useDispatch();
+  
+  // const categories = useSelector(showCategory);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -106,8 +112,9 @@ export default function Category() {
   };
 
   const getCategory = async () => {
-    const categories = await axios.get('/category/index');
-    setCategoryList(categories.data)
+    dispatch(getCategory())
+    // console.log(categories);
+    // setCategoryList(categories.data)
   }
   useEffect(() => {
     getCategory();
