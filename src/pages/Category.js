@@ -26,8 +26,9 @@ import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
+import Alert from '../components/Alert';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-import {getCategory,showCategory} from '../reducers/categoryReducer'
+import {getCategory,showCategory,addCategory} from '../reducers/categoryReducer'
 // mock
 import axios from '../components/Axios'
 
@@ -103,7 +104,7 @@ export default function Category() {
 
   const dispatch = useDispatch();
   
-  // const categories = useSelector(showCategory);
+  const categories = useSelector(showCategory);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -111,14 +112,16 @@ export default function Category() {
     setOrderBy(property);
   };
 
-  const getCategory = async () => {
+  const getCategories = async () => {
     dispatch(getCategory())
-    // console.log(categories);
-    // setCategoryList(categories.data)
   }
   useEffect(() => {
-    getCategory();
+    getCategories();
   }, [])
+
+  useEffect(() => {    
+    setCategoryList(categories);
+  }, [categories])
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -158,18 +161,21 @@ export default function Category() {
   };
 
   const saveCategory = async(values)=>{
-    const saveData = await axios.post('/category/save',values)
-    console.log(saveData)
+    dispatch(addCategory(values))
+    // const saveData = await axios.post('/category/save',values)
+    // console.log(saveData)
   }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categoryList.length) : 0;
 
+    console.log(categoryList);
   const filteredUsers = categoryList.length > 0 && applySortFilter(categoryList, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
     <Page title="Category">
+      <Alert message={'category is save'} />
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>

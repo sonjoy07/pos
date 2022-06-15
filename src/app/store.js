@@ -1,12 +1,13 @@
 import { applyMiddleware} from 'redux';
-import { configureStore,getDefaultMiddleware  } from '@reduxjs/toolkit'
+import { configureStore  } from '@reduxjs/toolkit'
 import thunk from 'redux-thunk';
-import categoryReducer from '../reducers/categoryReducer'
+import logger from 'redux-logger'
+import categorySlide from '../reducers/categoryReducer'
 
 export const store = configureStore({
   reducer: {
-    category: categoryReducer,
+    category: categorySlide,
 
   },
-  middleware: [applyMiddleware(thunk), getDefaultMiddleware()]
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger)
 })
