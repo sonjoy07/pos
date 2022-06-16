@@ -1,4 +1,4 @@
-import { filter } from 'lodash';
+import { filter, isUndefined } from 'lodash';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
@@ -125,7 +125,9 @@ export default function Category() {
   }, [])
 
   useEffect(() => {
-    setCategoryList(categories);
+    if (!isUndefined(categories)) {
+      setCategoryList(categories);
+    }
   }, [categories])
 
   const handleSelectAllClick = (event) => {

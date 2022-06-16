@@ -11,7 +11,9 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Category from './pages/Category';
 import Products from './pages/Products';
+import Unit from './pages/Unit';
 import DashboardApp from './pages/DashboardApp';
+import Brand from './pages/Brand';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +27,8 @@ export default function Router() {
         { path: 'app', element: !isLoged ? <Navigate to="/login" replace />:<DashboardApp /> },
         { path: 'user', element: !isLoged ? <Navigate to="/login" replace />:<User /> },
         { path: 'category', element: !isLoged ? <Navigate to="/login" replace />:<Category /> },
+        { path: 'unit', element: !isLoged ? <Navigate to="/login" replace />:<Unit /> },
+        { path: 'brand', element: !isLoged ? <Navigate to="/login" replace />:<Brand /> },
         { path: 'products', element: !isLoged ? <Navigate to="/login" replace />:<Products /> },
         { path: 'blog', element: !isLoged ? <Navigate to="/login" replace />:<Blog /> },
         { path: 'sales', element: !isLoged ? <Navigate to="/login" replace />:<Sale /> },

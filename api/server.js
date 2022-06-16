@@ -4,6 +4,9 @@ const app = express();
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/category.routes')(app);
+require('./app/routes/product.routes')(app);
+require('./app/routes/unit.routes')(app);
+require('./app/routes/brand.routes')(app);
 var corsOptions = {
   origin: "http://localhost:3000"
 };

@@ -29,7 +29,7 @@ import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-import { getProduct, showProduct, addProduct, editProduct, deleteCat } from '../reducers/productReducer'
+import { getUnit, showUnit, addUnit, editUnit, deleteCat } from '../reducers/unitReducer'
 // mock
 
 // ----------------------------------------------------------------------
@@ -86,7 +86,7 @@ function applySortFilter(array, comparator, query) {
   return []
 }
 
-export default function Products() {
+export default function Unit() {
   const [page, setPage] = useState(0);
 
   const [open, setOpen] = useState(false);
@@ -95,7 +95,7 @@ export default function Products() {
 
   const [selected, setSelected] = useState([]);
 
-  const [productList, setProductList] = useState([]);
+  const [unitList, setUnitList] = useState([]);
 
   const [orderBy, setOrderBy] = useState('name');
 
@@ -107,7 +107,7 @@ export default function Products() {
 
   const dispatch = useDispatch();
 
-  const products = useSelector(showProduct);
+  const categories = useSelector(showUnit);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -116,7 +116,7 @@ export default function Products() {
   };
 
   const getCategories = async () => {
-    dispatch(getProduct())
+    dispatch(getUnit())
   }
 
   useEffect(() => {
@@ -125,14 +125,14 @@ export default function Products() {
   }, [])
 
   useEffect(() => {
-    if (!isUndefined(products)) {
-      setProductList(products);
+    if (!isUndefined(categories)) {
+      setUnitList(categories);
     }
-  }, [products])
+  }, [categories])
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = productList.map((n) => n.name);
+      const newSelecteds = unitList.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -167,13 +167,13 @@ export default function Products() {
     setFilterName(event.target.value);
   };
 
-  const saveProduct = async (values) => {
-    const saveData = await dispatch(addProduct(values))
+  const saveUnit = async (values) => {
+    const saveData = await dispatch(addUnit(values))
     setOpen(false)
     toast.success(saveData.data.message);
   }
-  const updateProduct = async (values) => {
-    const updateData = await dispatch(editProduct(values))
+  const updateUnit = async (values) => {
+    const updateData = await dispatch(editUnit(values))
     setOpen(false)
     toast.success(updateData.data.message);
   }
@@ -191,23 +191,22 @@ export default function Products() {
     })
   }
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - productList.length) : 0;
-  console.log(productList);
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - unitList.length) : 0;
 
-  const filteredUsers = productList.length > 0 && applySortFilter(productList, getComparator(order, orderBy), filterName);
+  const filteredUsers = unitList.length > 0 && applySortFilter(unitList, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Product">
+    <Page title="Unit">
       <ToastContainer />
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Product
+            Unit
           </Typography>
           <Button variant="contained" onClick={() => setOpen(true)} component={RouterLink} to="#" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Product
+            New Unit
           </Button>
         </Stack>
 
@@ -221,7 +220,7 @@ export default function Products() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={productList.length}
+                  rowCount={unitList.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
@@ -281,7 +280,7 @@ export default function Products() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={productList.length}
+            count={unitList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -297,7 +296,7 @@ export default function Products() {
         aria-describedby="parent-modal-description"
       >
         <Box sx={{ ...style, width: '60%' }}>
-          <h2 id="parent-modal-title">Product Form</h2>
+          <h2 id="parent-modal-title">Unit Form</h2>
           {/* <Box
             sx={{
               maxWidth: '100%',
@@ -321,9 +320,9 @@ export default function Products() {
             }}
             onSubmit={(values) => {
               if (values.id) {
-                updateProduct(values)
+                updateUnit(values)
               } else {
-                saveProduct(values)
+                saveUnit(values)
               }
             }}
           >

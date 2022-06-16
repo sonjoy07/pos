@@ -30,7 +30,7 @@ export default function UserMoreMenu(props) {
     props.dataSet(props.row)
   }
   const deleteCategory = () => {
-    props.deleteCategory(props.row)
+    props.deleteRow(props.row)
     setDeleteDialouge(false)
     setIsOpen(false)
   }
