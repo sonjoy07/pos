@@ -17,7 +17,6 @@ import DashboardApp from './pages/DashboardApp';
 
 export default function Router() {
   const isLoged = localStorage.getItem('_token')
-  console.log('isloged',isLoged);
   return useRoutes([
     {
       path: '/dashboard',

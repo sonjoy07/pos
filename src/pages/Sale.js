@@ -19,7 +19,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Input,
   Table,
   Avatar,
   TableRow,
@@ -83,7 +82,7 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function User() {
-  const [page, setPage] = useState(0);
+  const [page] = useState(0);
 
   const [value, setValue] = useState(new Date());
 
@@ -93,9 +92,9 @@ export default function User() {
 
   const [orderBy, setOrderBy] = useState('name');
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName] = useState('');
 
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage] = useState(5);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -130,18 +129,6 @@ export default function User() {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleFilterByName = (event) => {
-    setFilterName(event.target.value);
-  };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
 

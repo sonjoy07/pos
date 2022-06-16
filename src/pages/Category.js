@@ -17,20 +17,20 @@ import {
   TableContainer,
   TablePagination,
   Box,
-  TextField
+  TextField,
 } from '@mui/material';
 import { Formik } from 'formik';
 import { useSelector, useDispatch } from "react-redux";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
 import Iconify from '../components/Iconify';
 import SearchNotFound from '../components/SearchNotFound';
-import Alert from '../components/Alert';
 import { UserListHead, UserListToolbar, UserMoreMenu } from '../sections/@dashboard/user';
-import {getCategory,showCategory,addCategory} from '../reducers/categoryReducer'
+import { getCategory, showCategory, addCategory, editCategory, deleteCat } from '../reducers/categoryReducer'
 // mock
-import axios from '../components/Axios'
 
 // ----------------------------------------------------------------------
 
@@ -83,6 +83,7 @@ function applySortFilter(array, comparator, query) {
     }
     return stabilizedThis.map((el) => el[0]);
   }
+  return []
 }
 
 export default function Category() {
@@ -90,7 +91,7 @@ export default function Category() {
 
   const [open, setOpen] = useState(false);
 
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState('desc');
 
   const [selected, setSelected] = useState([]);
 
@@ -100,10 +101,12 @@ export default function Category() {
 
   const [filterName, setFilterName] = useState('');
 
+  const [formData, setFormData] = useState({ name: '', id: '' })
+
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const dispatch = useDispatch();
-  
+
   const categories = useSelector(showCategory);
 
   const handleRequestSort = (event, property) => {
@@ -115,11 +118,13 @@ export default function Category() {
   const getCategories = async () => {
     dispatch(getCategory())
   }
+
   useEffect(() => {
     getCategories();
+    // eslint-disable-next-line
   }, [])
 
-  useEffect(() => {    
+  useEffect(() => {
     setCategoryList(categories);
   }, [categories])
 
@@ -160,22 +165,39 @@ export default function Category() {
     setFilterName(event.target.value);
   };
 
-  const saveCategory = async(values)=>{
-    dispatch(addCategory(values))
-    // const saveData = await axios.post('/category/save',values)
-    // console.log(saveData)
+  const saveCategory = async (values) => {
+    const saveData = await dispatch(addCategory(values))
+    setOpen(false)
+    toast.success(saveData.data.message);
+  }
+  const updateCategory = async (values) => {
+    const updateData = await dispatch(editCategory(values))
+    setOpen(false)
+    toast.success(updateData.data.message);
+  }
+  const deleteCategory = async (values) => {
+    const deleteData = await dispatch(deleteCat(values))
+    setOpen(false)
+    toast.success(deleteData.data.message);
+  }
+  const dataSet = (row) => {
+    setOpen(true)
+    setFormData({
+      ...formData,
+      name: row.name,
+      id: row._id
+    })
   }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categoryList.length) : 0;
 
-    console.log(categoryList);
   const filteredUsers = categoryList.length > 0 && applySortFilter(categoryList, getComparator(order, orderBy), filterName);
 
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
     <Page title="Category">
-      <Alert message={'category is save'} />
+      <ToastContainer />
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -228,7 +250,7 @@ export default function Category() {
                         </TableCell>
 
                         <TableCell align="right">
-                          <UserMoreMenu />
+                          <UserMoreMenu dataSet={dataSet} row={row} deleteCategory={deleteCategory} />
                         </TableCell>
                       </TableRow>
                     );
@@ -272,7 +294,7 @@ export default function Category() {
         aria-describedby="parent-modal-description"
       >
         <Box sx={{ ...style, width: '60%' }}>
-          <h2 id="parent-modal-title">Add Category</h2>
+          <h2 id="parent-modal-title">Category Form</h2>
           {/* <Box
             sx={{
               maxWidth: '100%',
@@ -284,20 +306,22 @@ export default function Category() {
               Save
             </Button>
           </Box> */}
+          {console.log(formData)}
           <Formik
-            initialValues={{ name: '' }}
+            initialValues={{ name: formData.name, id: formData.id }}
             validate={values => {
-              console.log(!values.name);
               const errors = {};
               if (!values.name) {
                 errors.name = 'Name field is Required';
               }
               return errors;
             }}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log(values);
-              saveCategory(values)
-              
+            onSubmit={(values) => {
+              if (values.id) {
+                updateCategory(values)
+              } else {
+                saveCategory(values)
+              }
             }}
           >
             {({

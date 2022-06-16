@@ -46,6 +46,7 @@ exports.update = async (req, res) => {
   }
 }
 exports.delete = async (req, res) => {
+  console.log(req.body)
   if (!_.isUndefined(req.body.id)) {
     const id = req.body.id;
     const prev = Category.findByIdAndDelete(id, { new: true }, (err, category) => {

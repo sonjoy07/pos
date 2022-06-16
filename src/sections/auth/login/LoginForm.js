@@ -36,7 +36,6 @@ export default function LoginForm() {
           password: values.password
         })
       if(response){
-        console.log(response)
         localStorage.setItem('userInfo',JSON.stringify(response.data))
         localStorage.setItem('_token',JSON.stringify(response.data.accessToken))
         navigate('/dashboard', { replace: true });
